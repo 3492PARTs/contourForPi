@@ -1,3 +1,4 @@
+from pickle import TRUE
 import time
 import cv2
 #from networktables import NetworkTable, NetworkTables as NT, NetworkTablesInstance as NTI
@@ -9,15 +10,15 @@ sink = cv2.VideoCapture(1)
 input_img = 0
 
 # [hue, saturation, value]
-blueMin = np.asarray([0, 180, 0])
-blueMax = np.asarray([30, 200, 255])
+blueMin = np.asarray([0, 160, 0])
+blueMax = np.asarray([15, 200, 300])
 
-redMin = np.asarray([110, 180, 0])
-redMax = np.asarray([120, 200, 255])
+redMin = np.asarray([110, 160, 0])
+redMax = np.asarray([120, 200, 300])
 
-isred = True
+isred = False
 
-time.sleep(6)
+time.sleep(2)
 while True:
    
    times, input_img = sink.read()
@@ -33,7 +34,6 @@ while True:
 
    kernel = np.ones((3, 3), np.uint8)
    binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
-
 
    cv2.waitKey(10)
    cv2.imshow(window, binary_img)
