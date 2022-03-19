@@ -35,5 +35,7 @@ while True:
    kernel = np.ones((3, 3), np.uint8)
    binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
 
+   edges = cv2.Canny(binary_img, 1400, 1500)
+
    cv2.waitKey(10)
-   cv2.imshow(window, binary_img)
+   cv2.imshow(window, edges)
