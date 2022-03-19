@@ -1,4 +1,3 @@
-from pickle import TRUE
 import time
 import cv2
 #from networktables import NetworkTable, NetworkTables as NT, NetworkTablesInstance as NTI
@@ -13,7 +12,7 @@ input_img = 0
 blueMin = np.asarray([0, 160, 0])
 blueMax = np.asarray([15, 200, 300])
 
-redMin = np.asarray([110, 160, 0])
+redMin = np.asarray([100, 170, 0])
 redMax = np.asarray([120, 200, 300])
 
 isred = False
@@ -32,10 +31,18 @@ while True:
    else:
       binary_img = cv2.inRange(HSV_img, blueMin, blueMax)
 
+   ksize = (3, 3)
+   M = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
    kernel = np.ones((3, 3), np.uint8)
-   binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
+   
+   #binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_GRADIENT, M)
+   cv2.erode(binary_img, M, iterations=100)
 
-   edges = cv2.Canny(binary_img, 1400, 1500)
+   edges = cv2.Canny(binary_img, 128, 256)
+
+   contours, _ = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+   cv2.drawContours(output_img, contours, -1, (0,255,0), 3)
 
    cv2.waitKey(10)
-   cv2.imshow(window, edges)
+   cv2.imshow(window, output_img)

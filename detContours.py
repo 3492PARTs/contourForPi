@@ -62,20 +62,7 @@ def main():
         binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
 
         #contour is a pain that I hope no one else has to endure
-        _, contour_list, _ = cv2.findContours(binary_img, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_SIMPLE)
-
-        for contour in contour_list:
-            if cv2.contourArea(contour) < 15:
-                continue
-
-            cv2.drawContours(output_img, contour, -1, color = (255, 255, 255), thickness = -1)
-
-            outline = cv2.minAreaRect(contour)
-            center, size, angle = outline
-            center = tuple([int(dim) for dim in center])
-
-            cv2.drawContours(output_img, [cv2.boxPoints(outline).astype(int)], -1, color = (0, 0, 255), thickness = 2)
-            cv2.circle(output_img, center = center, radius = 3, color = (0, 0, 255), thickness = -1)
+        edges = cv2.Canny(binary_img, 1400, 1500)
 
         count = 1
         for element in binary_img:
