@@ -31,10 +31,10 @@ def main():
     output = cm.putVideo("E", width, height)
 
     # [hue, saturation, value]
-    blueMin = np.asarray([5, 160, 50])
+    blueMin = np.asarray([5, 160, 100])
     blueMax = np.asarray([15, 200, 300])
 
-    redMin = np.asarray([115, 180, 50])
+    redMin = np.asarray([115, 180, 100])
     redMax = np.asarray([120, 200, 300])
 
     isred = True

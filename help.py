@@ -9,13 +9,13 @@ sink = cv2.VideoCapture(1)
 input_img = 0
 
 # [hue, saturation, value]
-blueMin = np.asarray([5, 160, 50])
+blueMin = np.asarray([5, 160, 100])
 blueMax = np.asarray([15, 200, 300])
 
-redMin = np.asarray([115, 180, 50])
+redMin = np.asarray([115, 180, 100])
 redMax = np.asarray([120, 200, 300])
 
-isred = False
+isred = True
 
 time.sleep(2)
 while True:
@@ -40,30 +40,7 @@ while True:
    edges = cv2.Canny(binary_img, 128, 256)
 
    contours, _ = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-   #cv2.drawContours(output_img, contours, -1, (0,255,0), 3)
-
-   for cnt in contours : 
-
-      if cv2.contourArea(cnt) < 1:
-         break
-
-      approx = cv2.approxPolyDP(cnt, 0.009 * cv2.arcLength(cnt, True), True) 
-
-      # draws boundary of contours. 
-      cv2.drawContours(output_img, [approx], 0, (0, 0, 255), 5) 
-
-      # Used to flatted the array containing 
-      # the co-ordinates of the vertices. 
-      n = approx.ravel() 
-      i = 0
-
-      for j in n : 
-         if(i % 2 == 0): 
-            x = n[i] 
-            y = n[i + 1] 
-
-         i = i + 1
-         #TO DO: Find average of all x and y coordinates to get an approximate center point of the balls
+   cv2.drawContours(output_img, contours, -1, (0,255,0), 3)
 
    cv2.waitKey(10)
    cv2.imshow(window, output_img)
