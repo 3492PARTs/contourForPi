@@ -8,6 +8,7 @@ import json
 
 
 def main():
+    #cm is never used but wpilibpi complains if you don't use their stuff
     cm = CameraServer()
 
     cm.enableLogging()
@@ -30,10 +31,10 @@ def main():
     output = cm.putVideo("E", width, height)
 
     # [hue, saturation, value]
-    blueMin = np.asarray([0, 160, 0])
+    blueMin = np.asarray([5, 160, 50])
     blueMax = np.asarray([15, 200, 300])
 
-    redMin = np.asarray([110, 180, 0])
+    redMin = np.asarray([115, 180, 50])
     redMax = np.asarray([120, 200, 300])
 
     isred = True
@@ -49,7 +50,7 @@ def main():
             continue
 
 
-        #Takes input and converts its to a binary image (to do: make not bad (did))
+        #Takes input and converts its to a binary image
         HSV_img = cv2.cvtColor(input_img, cv2.COLOR_RGB2HSV)
         if isred == True:
             binary_img = cv2.inRange(HSV_img, redMin, redMax)
@@ -57,16 +58,20 @@ def main():
             binary_img = cv2.inRange(HSV_img, blueMin, blueMax)
 
 
-        #removing most of the noise
-        kernel = np.ones((3, 3), np.uint8)
-        binary_img = cv2.morphologyEx(binary_img, cv2.MORPH_OPEN, kernel)
+        #creating a custom ellipse kernel 
+        ksize = (3, 3)
+        M = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
+   
+        #Eroding followed by using Canny algorithm to find edges
+        cv2.erode(binary_img, M, iterations=100)
+        edges = cv2.Canny(binary_img, 128, 256)
 
-        #contour is a pain that I hope no one else has to endure
-        edges = cv2.Canny(binary_img, 1400, 1500)
+        contours, _ = cv2.findContours(edges, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        cv2.drawContours(output_img, contours, -1, (0,255,0), 3) #This part isn't necassary but incase we get video to work on wpilibpi it helps visualize the contours
 
         count = 1
-        for element in binary_img:
-            vision_nt.putNumberArray('binaryImgUnwrapped' + str(count), element)
+        for element in contours:
+            vision_nt.putNumberArray('contoursunwrapped' + str(count), element)
             count += 1
 
         print(binary_img)
