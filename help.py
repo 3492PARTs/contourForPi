@@ -9,7 +9,7 @@ sink = cv2.VideoCapture(0)
 input_img = 0
 
 # [hue, saturation, value]
-blueMin = np.asarray([5, 90, 100])
+blueMin = np.asarray([5, 120, 80])
 blueMax = np.asarray([15, 240, 340])
 
 redMin = np.asarray([115, 180, 100])
@@ -31,7 +31,7 @@ while True:
    else:
       binary_img = cv2.inRange(HSV_img, blueMin, blueMax)
 
-   #creating a custom ellipse kernel 
+   #creating a custom ellipse kernel (ksize lags computer massivly)
    ksize = (3, 3)
    M = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, ksize)
    
@@ -50,9 +50,6 @@ while True:
          continue
 
    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-   #cv2.drawContours(output_img, contours, -1, (0,255,0), 3)
-
-
    cv2.drawContours(output_img, contours, -1, (0,255,0), 3)      
 
    cv2.waitKey(10)
